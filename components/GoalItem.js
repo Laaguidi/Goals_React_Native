@@ -1,57 +1,32 @@
-import { useState } from 'react';
-import { StyleSheet, View, FlatList } from 'react-native';
+import { StyleSheet, View, Text, Pressable } from 'react-native';
 
-import GoalItem from './components/GoalItem';
-import GoalInput from './components/GoalInput';
-
-export default function App() {
-    const [courseGoals, setCourseGoals] = useState([]);
-
-    function addGoalHandler(enteredGoalText) {
-        setCourseGoals((currentCourseGoals) => [
-            ...currentCourseGoals,
-            { text: enteredGoalText, id: Math.random().toString() },
-        ]);
-    }
-
-    function deleteGoalHandler(id) {
-        setCourseGoals((currentCourseGoals) => {
-            return currentCourseGoals.filter((goal) => goal.id !== id);
-        });
-    }
-
+function GoalItem(props) {
     return (
-        <View style={styles.appContainer}>
-            <GoalInput onAddGoal={addGoalHandler} />
-            <View style={styles.goalsContainer}>
-                <FlatList
-                    data={courseGoals}
-                    renderItem={(itemData) => {
-                        return (
-                            <GoalItem
-                                text={itemData.item.text}
-                                id={itemData.item.id}
-                                onDeleteItem={deleteGoalHandler}
-                            />
-                        );
-                    }}
-                    keyExtractor={(item, index) => {
-                        return item.id;
-                    }}
-                    alwaysBounceVertical={false}
-                />
-            </View>
+        <View style={styles.goalItem}>
+            <Pressable
+                android_ripple={{ color: '#210644' }}
+                onPress={props.onDeleteItem.bind(this, props.id)}
+                style={({ pressed }) => pressed && styles.pressedItem}
+            >
+                <Text style={styles.goalText}>{props.text}</Text>
+            </Pressable>
         </View>
     );
 }
 
+export default GoalItem;
+
 const styles = StyleSheet.create({
-    appContainer: {
-        flex: 1,
-        paddingTop: 50,
-        paddingHorizontal: 16,
+    goalItem: {
+        margin: 8,
+        borderRadius: 6,
+        backgroundColor: '#5e0acc',
     },
-    goalsContainer: {
-        flex: 5,
+    pressedItem: {
+        opacity: 0.5,
+    },
+    goalText: {
+        color: 'white',
+        padding: 8,
     },
 });
